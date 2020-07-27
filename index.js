@@ -15,6 +15,54 @@ server.get('/cars', async (req, res, next) => {
   }
 })
 
+server.get('/cars/:id', async(req, res, next) => {
+  try {
+    const car = await db('car-dealer')
+    .where({'id': req.params.id})
+    res.json(car)
+  } catch (error) {
+    next(error)
+  }
+})
+
+server.post('/cars', async(req, res, next) => {
+  try {
+    const newCar = await db('car-dealer')
+    .insert(req.body)
+    res.status(201).json(newCar)
+  } catch (error) {
+   next(error) 
+  }
+})
+
+server.put('/cars/:id', async (req, res, next) => {
+  try {
+     await db('car-dealer')
+    .update(req.body)
+    .where({id: req.params.id})
+
+    const updatedList = await db('car-dealer')
+    res.status(201).json(updatedList)
+
+  } catch (error) {
+    next(error)
+  }
+})
+
+server.delete('/cars/:id', async(req, res, next) => {
+  try {
+     await db('car-dealer')
+    .where({id: req.params.id})
+    .del()
+
+    const updatedList = await db('car-dealer')
+    res.json(updatedList)
+
+  } catch (error) {
+    next(error)
+  }
+})
+
 server.use((err, req, res, next) => {
   console.log(err)
   res.status(500).json({ errorMessage: "something happened" })
